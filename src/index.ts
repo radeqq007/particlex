@@ -15,7 +15,7 @@ export interface Config {
 export interface Options {
 	init: (index: number) => Particle;
 	update: (p: Particle, dt: number) => void;
-	render: (p: Particle, ctx: CanvasRenderingContext2D, dt: number) => void;
+	render: (p: Particle, ctx: CanvasRenderingContext2D) => void;
 }
 
 export const createParticles = (
@@ -55,7 +55,7 @@ export const createParticles = (
 		}
 
 		for (const p of particles) {
-			render(p, ctx, dt);
+			render(p, ctx);
 		}
 
 		requestAnimationFrame(loop);
