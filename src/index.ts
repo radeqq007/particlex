@@ -54,6 +54,8 @@ export const createParticles = (
 	let running: boolean = false;
 
 	const loop = (currentTime: number) => {
+    if (!running) return;
+
 		const dt = (currentTime - lastTime) / 1000;
 
 		lastTime = currentTime;
