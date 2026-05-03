@@ -11,6 +11,7 @@ export interface Config {
 	respawn?: boolean;
 	keepDead?: boolean;
 	autoStart?: boolean;
+  clearCanvas?: boolean;
 }
 
 export interface Options {
@@ -39,6 +40,7 @@ export const createParticles = (
 		respawn: true,
 		keepDead: false,
 		autoStart: false,
+    clearCanvas: true,
 		...config,
 	};
 
@@ -55,7 +57,10 @@ export const createParticles = (
 		const dt = (currentTime - lastTime) / 1000;
 
 		lastTime = currentTime;
-		ctx.clearRect(0, 0, c.width, c.height);
+
+    if (config.clearCanvas) {
+      ctx.clearRect(0, 0, c.width, c.height);
+    }
 
 		for (const p of particles) {
 			update(p, dt);
