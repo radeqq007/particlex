@@ -14,20 +14,22 @@ yarn add particlex
 import { createParticles } from "particlex";
 import type { Particle } from "particlex";
 
-const init = (i: number): Particle => {
-  return { x: 5, y: 5 };
+const init = (_: number): Particle => {
+  return { x: Math.random() * 100, y: Math.random() * 100 };
 }
 
 const update = (p: Particle, dt: number) => {
-  p.x = p.x + (4 * dt);
-  p.y = p.y + Math.random() * 5 - 2.5;
-  p.life! -= 0.1;
+  p.y = p.y + (40 * dt);
+  p.x = p.x + Math.random() * 5 - 2.5;
+  p.life! -= Math.random() * 0.2;
 }
 
-const render = (p: Particle, ctx: CanvasRenderingContext2D, dt: number) => {
+const render = (p: Particle, ctx: CanvasRenderingContext2D) => {
   ctx.fillStyle = "red";
-  ctx.fillRect(p.x, p.y, 5, 5);
+  ctx.fillRect(p.x, p.y, 8, 8);
+  ctx.fillText(p.life!.toFixed(2).toString(), p.x, p.y - 5)
 }
 
-createParticles("#canvas", { init, update, render }, { initialLife: 1, count: 4 });
+createParticles("#canvas", { init, update, render }, { initialLife: 10, count: 80, autoStart: true });
 ```
+
