@@ -34,7 +34,7 @@ export const createParticles = (
 	const ctx = c.getContext("2d");
   if (!ctx) throw new Error("Couldn't get 2D context");
 
-	config = { initialLife: 1, keepDead: false, autoStart: false, ...config };
+	config = { initialLife: 1, respawn: true, keepDead: false, autoStart: false, ...config };
 
 	let particles: Particle[] = Array.from({ length: config.count }, (_, i) => {
 		const p = init(i);
