@@ -10,6 +10,7 @@ export interface Config {
 	initialLife?: number;
 	respawn?: boolean;
 	keepDead?: boolean;
+  autoStart?: boolean;
 }
 
 export interface Options {
@@ -22,12 +23,18 @@ export const createParticles = (
 	canvas: string,
 	{ init, update, render }: Options,
 	config: Config,
-) => {
+): {
+  start: () => void,
+  stop: () => void,
+  readonly particles: Particle[]
+} => {
 	const c = document.querySelector(canvas) as HTMLCanvasElement;
-	const ctx = c.getContext("2d");
-	if (!ctx) return;
+  if (!c) throw new Error(`Canvas "${canvas}" not found`);
 
-	config = { initialLife: 1, keepDead: false, ...config };
+	const ctx = c.getContext("2d");
+  if (!ctx) throw new Error("Couldn't get 2D context");
+
+	config = { initialLife: 1, keepDead: false, autoStart: false, ...config };
 
 	let particles: Particle[] = Array.from({ length: config.count }, (_, i) => {
 		const p = init(i);
@@ -35,6 +42,8 @@ export const createParticles = (
 	});
 
 	let lastTime = 0;
+  let id: number | null = null;
+  let running: boolean = false;
 
 	const loop = (currentTime: number) => {
 		const dt = (currentTime - lastTime) / 1000;
@@ -61,5 +70,29 @@ export const createParticles = (
 		requestAnimationFrame(loop);
 	};
 
-	requestAnimationFrame(loop);
+  const start = () => {
+    if (running) return;
+    running = true;
+    lastTime = performance.now();
+    id = requestAnimationFrame(loop)
+  }
+
+  const stop = () => {
+    running = false;
+    if (!id) return;
+
+    cancelAnimationFrame(id);
+    id = null;
+  }
+
+  if (config.autoStart) {
+    start()
+  }
+
+  return {
+    start,
+    stop,
+    get particles() { return particles }
+  }
 };
+
