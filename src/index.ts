@@ -17,7 +17,7 @@ export interface Config {
 export interface Options {
 	init: (index: number) => Particle;
 	update: (p: Particle, dt: number) => void;
-	render: (p: Particle, ctx: CanvasRenderingContext2D) => void;
+	render: (p: Readonly<Particle>, ctx: CanvasRenderingContext2D) => void;
 }
 
 export const createParticles = (
