@@ -8,6 +8,7 @@ export interface Particle {
 export interface Config {
   count: number;
   initialLife?: number;
+  respawn?: boolean;
   keepDead?: boolean;
 }
 
@@ -43,7 +44,11 @@ export const createParticles = (canvas: string, { init, update, render }: Option
       update(p, dt);
     }
 
-    if (!config.keepDead) {
+    if (config.respawn) {
+      particles = particles.map((p, i) =>
+        p.life! <= 0 ? { ...init(i), life: config.initialLife } : p
+      )
+    } else if (!config.keepDead) {
       particles = particles.filter(p => p.life! > 0);
     }
 
