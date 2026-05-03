@@ -27,6 +27,8 @@ export const createParticles = (
 ): {
 	start: () => void;
 	stop: () => void;
+  toggle: () => void;
+  readonly running: boolean;
 	readonly particles: Particle[];
 } => {
 	const c = document.querySelector(canvas) as HTMLCanvasElement;
@@ -98,6 +100,8 @@ export const createParticles = (
 		id = null;
 	};
 
+  const toggle = () => running ? stop() : start()
+
 	if (config.autoStart) {
 		start();
 	}
@@ -105,6 +109,10 @@ export const createParticles = (
 	return {
 		start,
 		stop,
+    toggle,
+    get running() {
+      return running
+    },
 		get particles() {
 			return particles;
 		},
