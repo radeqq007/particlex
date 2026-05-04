@@ -29,7 +29,7 @@ export const gravity = (strength: number = 9.8): Force => (p: Particle, dt: numb
 export const wind = (strength: number = 10): Force => (p: Particle, dt: number) => { p.vx = (p.vx ?? 0) + strength * dt; p.x += p.vx * dt };
 
 export const createParticles = (
-	canvas: string,
+	canvas: string | HTMLCanvasElement,
 	{ init, update, render }: Options,
 	config: Config,
 ): {
@@ -40,7 +40,7 @@ export const createParticles = (
   readonly running: boolean;
 	readonly particles: Particle[];
 } => {
-	const c = document.querySelector(canvas) as HTMLCanvasElement;
+	const c = typeof canvas === "string" ? document.querySelector(canvas) as HTMLCanvasElement : canvas;
 	if (!c) throw new Error(`Canvas "${canvas}" not found`);
 
 	const ctx = c.getContext("2d");
