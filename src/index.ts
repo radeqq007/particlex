@@ -27,6 +27,7 @@ export const createParticles = (
 	start: () => void;
 	stop: () => void;
   toggle: () => void;
+  emit: (n: number) => void;
   readonly running: boolean;
 	readonly particles: Particle[];
 } => {
@@ -96,6 +97,14 @@ export const createParticles = (
 	};
 
   const toggle = () => running ? stop() : start()
+  
+  const emit = (n: number) => {
+    const existing = particles.length;
+    for (let i = 0; i < n; i++) {
+      const p = init(existing + n)
+      particles.push(p)
+    }
+  }
 
 	if (config.autoStart) {
 		start();
@@ -105,6 +114,7 @@ export const createParticles = (
 		start,
 		stop,
     toggle,
+    emit,
     get running() {
       return running
     },
