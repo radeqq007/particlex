@@ -7,6 +7,7 @@ export interface Particle {
 
 export interface Config {
 	count: number;
+  maxCount?: number;
 	respawn?: boolean;
 	keepDead?: boolean;
 	autoStart?: boolean;
@@ -45,7 +46,11 @@ export const createParticles = (
 		...config,
 	};
 
-	let particles: Particle[] = Array.from({ length: config.count }, (_, i) => init(i));
+  const count = config.maxCount
+    ? Math.min(config.count, config.maxCount)
+    : config.count;
+
+	let particles: Particle[] = Array.from({ length: count }, (_, i) => init(i));
 
 	let lastTime = 0;
 	let id: number | null = null;
@@ -101,7 +106,9 @@ export const createParticles = (
   const emit = (n: number) => {
     const existing = particles.length;
     for (let i = 0; i < n; i++) {
-      const p = init(existing + n)
+      if (config.maxCount !== undefined && existing + i >= config.maxCount) break;
+
+      const p = init(existing + i)
       particles.push(p)
     }
   }
