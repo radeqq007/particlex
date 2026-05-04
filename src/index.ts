@@ -12,6 +12,7 @@ export interface Config {
 	keepDead?: boolean;
 	autoStart?: boolean;
   clearCanvas?: boolean;
+  forces?: Force[];
 }
 
 export interface Options {
@@ -19,6 +20,13 @@ export interface Options {
 	update: (p: Particle, dt: number) => void;
 	render: (p: Readonly<Particle>, ctx: CanvasRenderingContext2D) => void;
 }
+
+export type Force = (p: Particle, dt: number) => void;
+
+/** Pulls particles downward. */
+export const gravity = (strength: number = 9.8): Force => (p: Particle, dt: number) => { p.vy = (p.vy ?? 0) + strength * dt; p.y += p.vy * dt };
+/** Applies horizontal wind. */
+export const wind = (strength: number = 10): Force => (p: Particle, dt: number) => { p.vx = (p.vx ?? 0) + strength * dt; p.x += p.vx * dt };
 
 export const createParticles = (
 	canvas: string,
@@ -67,8 +75,11 @@ export const createParticles = (
       ctx.clearRect(0, 0, c.width, c.height);
     }
 
+    const forces = config.forces ?? [];
+
 		for (const p of particles) {
 			update(p, dt);
+      for (const force of forces) force(p, dt);
 		}
 
 		if (config.respawn) {
