@@ -1,13 +1,12 @@
 export interface Particle {
 	x: number;
 	y: number;
-	life?: number;
+	life: number;
 	[key: string]: any;
 }
 
 export interface Config {
 	count: number;
-	initialLife?: number;
 	respawn?: boolean;
 	keepDead?: boolean;
 	autoStart?: boolean;
@@ -38,7 +37,6 @@ export const createParticles = (
 	if (!ctx) throw new Error("Couldn't get 2D context");
 
 	config = {
-		initialLife: 1,
 		respawn: true,
 		keepDead: false,
 		autoStart: false,
@@ -46,10 +44,7 @@ export const createParticles = (
 		...config,
 	};
 
-	let particles: Particle[] = Array.from({ length: config.count }, (_, i) => {
-		const p = init(i);
-		return { ...p, life: p.life ?? config.initialLife };
-	});
+	let particles: Particle[] = Array.from({ length: config.count }, (_, i) => init(i));
 
 	let lastTime = 0;
 	let id: number | null = null;
@@ -72,10 +67,10 @@ export const createParticles = (
 
 		if (config.respawn) {
 			particles = particles.map((p, i) =>
-				p.life! <= 0 ? { ...init(i), life: config.initialLife } : p,
+				p.life <= 0 ? { ...init(i) } : p,
 			);
 		} else if (!config.keepDead) {
-			particles = particles.filter((p) => p.life! > 0);
+			particles = particles.filter((p) => p.life > 0);
 		}
 
 		for (const p of particles) {
