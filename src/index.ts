@@ -4,7 +4,7 @@ export interface Particle {
 	vx?: number;
 	vy?: number;
 	life: number;
-	[key: string]: any;
+	[key: string]: unknown;
 }
 
 export interface Config {
