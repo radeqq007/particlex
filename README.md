@@ -11,11 +11,11 @@ yarn add particlex
 ## Example usage
 
 ```ts
-import { createParticles } from "particlex";
+import { createParticles, gravity } from "particlex";
 import type { Particle } from "particlex";
 
 const init = (_: number): Particle => {
-  return { x: Math.random() * 100, y: Math.random() * 100 };
+  return { x: Math.random() * 100, y: Math.random() * 100, life: 1 };
 }
 
 const update = (p: Particle, dt: number) => {
@@ -30,6 +30,6 @@ const render = (p: Particle, ctx: CanvasRenderingContext2D) => {
   ctx.fillText(p.life!.toFixed(2).toString(), p.x, p.y - 5)
 }
 
-createParticles("#canvas", { init, update, render }, { initialLife: 10, count: 80, autoStart: true });
+createParticles("#canvas", { init, update, render }, { count: 80, maxCount: 20, autoStart: true, forces: [gravity()] });
 ```
 
