@@ -31,12 +31,30 @@ export const gravity =
 	(p: Particle, dt: number) => {
 		p.vy = (p.vy ?? 0) + strength * dt;
 	};
+
 /** Applies horizontal wind. */
 export const wind =
 	(strength: number = 10): Force =>
 	(p: Particle, dt: number) => {
 		p.vx = (p.vx ?? 0) + strength * dt;
 	};
+
+/** Attracts/repels particles toward a point. Negative `strength` = repel. */
+export const attract =
+  (tx: number, ty: number, strength: number): Force =>
+  (p: Particle, dt: number) => {
+    const dx = tx - p.x;
+    const dy = ty - p.y;
+    const distSq = dx * dx + dy * dy;
+    const dist = Math.sqrt(distSq);
+
+    if (dist < 5) return;
+
+    const f = (strength / dist) * dt;
+
+    p.vx = (p.vx ?? 0) + dx * f;
+    p.vy = (p.vy ?? 0) + dy * f;
+  }
 
 export const createParticles = (
 	canvas: string | HTMLCanvasElement,
@@ -155,3 +173,4 @@ export const createParticles = (
 		},
 	};
 };
+
