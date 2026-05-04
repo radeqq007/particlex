@@ -1,6 +1,8 @@
 export interface Particle {
 	x: number;
 	y: number;
+  vx?: number;
+  vy?: number;
 	life: number;
 	[key: string]: any;
 }
@@ -24,9 +26,9 @@ export interface Options {
 export type Force = (p: Particle, dt: number) => void;
 
 /** Pulls particles downward. */
-export const gravity = (strength: number = 9.8): Force => (p: Particle, dt: number) => { p.vy = (p.vy ?? 0) + strength * dt; p.y += p.vy * dt };
+export const gravity = (strength: number = 9.8): Force => (p: Particle, dt: number) => { p.vy = (p.vy ?? 0) + strength * dt };
 /** Applies horizontal wind. */
-export const wind = (strength: number = 10): Force => (p: Particle, dt: number) => { p.vx = (p.vx ?? 0) + strength * dt; p.x += p.vx * dt };
+export const wind = (strength: number = 10): Force => (p: Particle, dt: number) => { p.vx = (p.vx ?? 0) + strength * dt };
 
 export const createParticles = (
 	canvas: string | HTMLCanvasElement,
@@ -80,6 +82,8 @@ export const createParticles = (
 		for (const p of particles) {
 			update(p, dt);
       for (const force of forces) force(p, dt);
+      p.x += (p.vx ?? 0) * dt;
+      p.y += (p.vy ?? 0) * dt;
 		}
 
 		if (config.respawn) {
